@@ -13,6 +13,28 @@ def open_connection():
 	return connection
 
 
+def execute_sql():
+	connection = open_connection()
+	sql = ''
+	values = ()
+	commit = False
+	single = False
+	cursor = connection.execute(sql,values)
+	if commit is True:
+		results = connection.commit()
+	else:
+		results = cursor.fetchone() if single else cursor.fetchall()
+	cursor.close()
+	return results
+
+@app.teardown_appcontext
+def close_connection(exception):
+	connection  = getattr(g, '_connection', None)
+	if connection is  not None:
+		connection.close()
+
+
+
 @app.route('/')
 @app.route('/jobs')
 def jobs():
