@@ -1,5 +1,17 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,g
+import sqlite3
+PATH = 'db/jobs.sqlite'
+
+
 app = Flask(__name__)
+
+def open_connection():
+	connection = getattr(g, '_connection', None)
+	if connection is None:
+		connection = db = g._database = sqlite3.connect(PATH)
+	connection.row_factory = sqlite3.Row
+	return connection 
+
 
 @app.route('/')
 @app.route('/jobs')
